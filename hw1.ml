@@ -48,6 +48,7 @@ let rec eval_aexp (a: aexp) (sigma: state) : int = match a with
   | Add(a1,a2) -> eval_aexp a1 sigma + eval_aexp a2 sigma 
   | Sub(a1,a2) -> eval_aexp a1 sigma - eval_aexp a2 sigma 
   | Mul(a1,a2) -> eval_aexp a1 sigma * eval_aexp a2 sigma 
+  | _ -> failwith "Warning! Com not yet implemented!"
 
 (* 
   | Div(a1,a2) -> 
@@ -58,17 +59,11 @@ let rec eval_aexp (a: aexp) (sigma: state) : int = match a with
 let rec eval_bexp (b: bexp) (sigma: state) : bool = match b with
   | True -> true
   | False -> false 
-(*
- * fill in the missing cases and code
-  | EQ(a1,a2) -> 
-  | LE(a1,a2) ->
-  | Not b -> 
-  | And(b1,b2) -> 
-  | Or(b1,b2) -> 
- *) 
-  | _ -> 
-    (* you must put real code here *) 
-    failwith "Warning! BExp not yet implemented!"
+  | EQ(a1,a2) -> eval_aexp a1 sigma = eval_aexp a2 sigma
+  | LE(a1,a2) -> eval_aexp a1 sigma <= eval_aexp a2 sigma
+  | Not b -> not(eval_bexp b sigma)
+  | And(b1,b2) -> eval_bexp b1 sigma && eval_bexp b2 sigma
+  | Or(b1,b2) -> eval_bexp b1 sigma || eval_bexp b2 sigma
 
 (* Evaluates a com given the state 'sigma'. *) 
 let rec eval_com (c: com) (sigma:state) : state = match c with
@@ -78,14 +73,9 @@ let rec eval_com (c: com) (sigma:state) : state = match c with
              Printf.printf "%d" value; 
              sigma
        end
-(*
- * fill in the missing cases and code 
-  | Set(id,a) -> 
-  | Seq(c1,c2) -> 
-  | If(b,c1,c2) -> 
-  | While(b,c) -> 
-  | Let(id,a,c) -> 
- *) 
-  | _ -> 
-    (* you must put real code here *)
-    failwith "Warning! Com not yet implemented!"
+  | Set(id,a) -> LocMap.add id (eval_aexp a sigma) sigma
+  | Seq(c1,c2) -> eval_com c2 (eval_com c1 sigma)
+  | If(b,c1,c2) -> if eval_bexp b sigma then eval_com c1 sigma else eval_com c2 sigma
+  | While(b,c) -> if eval_bexp b sigma then eval_com ( Seq( c, While(b, c) ) ) sigma else eval_com Skip sigma
+  (* | Let(id,a,c) ->  *)
+  | _ -> failwith "Warning! Com not yet implemented!"
