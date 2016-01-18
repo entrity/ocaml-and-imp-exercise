@@ -77,5 +77,9 @@ let rec eval_com (c: com) (sigma:state) : state = match c with
   | Seq(c1,c2) -> eval_com c2 (eval_com c1 sigma)
   | If(b,c1,c2) -> if eval_bexp b sigma then eval_com c1 sigma else eval_com c2 sigma
   | While(b,c) -> if eval_bexp b sigma then eval_com ( Seq( c, While(b, c) ) ) sigma else eval_com Skip sigma
-  (* | Let(id,a,c) ->  *)
-  | _ -> failwith "Warning! Com not yet implemented!"
+  | Let(id,a,c) -> 
+      let initialValue = lookup sigma id in begin
+        eval_com ( Set( id, Const initialValue ) ) (
+          eval_com c (
+            eval_com ( Set( id, a ) ) sigma ) )
+      end
