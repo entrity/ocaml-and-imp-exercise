@@ -48,12 +48,16 @@ let rec eval_aexp (a: aexp) (sigma: state) : int = match a with
   | Add(a1,a2) -> eval_aexp a1 sigma + eval_aexp a2 sigma 
   | Sub(a1,a2) -> eval_aexp a1 sigma - eval_aexp a2 sigma 
   | Mul(a1,a2) -> eval_aexp a1 sigma * eval_aexp a2 sigma 
-  | _ -> failwith "Warning! Com not yet implemented!"
-
-(* 
-  | Div(a1,a2) -> 
-  | Mod(a1,a2) -> 
-*)
+  | Div(a1,a2) ->
+    if eval_aexp a2 sigma = 0 then begin
+      Printf.eprintf "Error divide by zero\n"; exit 1; end
+    else
+      eval_aexp a1 sigma / eval_aexp a2 sigma
+  | Mod(a1,a2) ->
+    if eval_aexp a2 sigma = 0 then begin
+      Printf.eprintf "Error modulo zero\n"; exit 1; end
+    else
+      eval_aexp a1 sigma mod eval_aexp a2 sigma
 
 (* Evaluates a bexp given the state 'sigma'. *) 
 let rec eval_bexp (b: bexp) (sigma: state) : bool = match b with
