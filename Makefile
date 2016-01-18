@@ -65,6 +65,11 @@ test4:
 	@echo "$(TEST4)" | ./imp --silent > test-result
 	@if diff -b -w test-result test-answer ; then echo "*** test4 passed" ; else echo "*** test4 FAILED: $(TEST4)" ; fi 
 
+test5:
+	@cat example.imp | ./imp --silent > test-result
+	@if diff -b -w test-result test-suite-answers ; then echo "*** test5 passed" ; else echo "*** test5 FAILED" diff -w test-result test-suite-answers; fi 
+
+
 # Your project will be graded using: 
 #
 #	./imp --silent < example.imp > test-result
