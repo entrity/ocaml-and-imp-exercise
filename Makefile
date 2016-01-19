@@ -67,8 +67,7 @@ test4:
 
 test5:
 	@cat example.imp | ./imp --silent > test-result
-	@if diff -b -w test-result test-suite-answers ; then echo "*** test5 passed" ; else echo "*** test5 FAILED" diff -w test-result test-suite-answers; fi 
-
+	@if grep -q 0 test-result; then echo "*** test5 FAILED"; cat test-result; else echo "*** test5 passed"; fi
 
 # Your project will be graded using: 
 #

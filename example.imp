@@ -1,4 +1,33 @@
-/* this is just "test3" from the makefile */
-{while i <= 5 do { total := total + (i*i) ; i := i + 1 }} ; print total ;
+/*
 
-x := 8 * 7; print x
+This suite is meant to be executed with the command `make test5`. For passing
+tests, it writes '1' to test-result. For failing tests, it writes '0' to test-
+result. The comments below the test blocks below indicate how many '1's should
+be present in the test-result file when test execution reaches said comment.
+
+*/
+
+{while i <= 5 do { total := total + (i*i) ; i := i + 1 }};
+{if total = 55 then print 1 else print 0};
+/* 1 */
+
+{if 59 % 8 = 3 then print 1 else print 0};
+{if 16 % 4 = 0 then print 1 else print 0};
+{if 4 % 16 = 4 then print 1 else print 0};
+/* 4 */
+
+{if 59 / 8 = 7 then print 1 else print 0};
+{if 16 / 4 = 4 then print 1 else print 0};
+{if 4 / 16 = 0 then print 1 else print 0};
+/* 7 */
+
+{if 3 + 4 * 7 - 8 % 3 = 29 then print 1 else print 0};
+/* 8 */
+
+x := 99; y := 34; z := x;
+{if z - y = 65 then print 1 else print 0};
+/* 9 */
+
+print 9
+/* '9' indicates that all the tests are done. This line is primarily
+here so that the previous lines can be uniform in ending with a semicolon. */
